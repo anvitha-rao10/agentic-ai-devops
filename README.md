@@ -95,3 +95,18 @@ Select Install suggested plugins
 Create an admin user (username & password)
 
 Finish setup and reach Jenkins dashboard
+
+
+### Jenkins Initial Plugin Installation
+
+On first launch, Jenkins automatically installs recommended plugins required for:
+- Pipelines
+- Git/GitHub integration
+- Credentials management
+- Build utilities
+
+This process may take a few minutes depending on network speed.  
+Green check marks indicate successful installation.  
+Red entries usually resolve automatically as dependencies are installed.
+
+After plugin installation, Jenkins prompts to create an admin user and then opens the dashboard.
