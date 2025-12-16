@@ -30,7 +30,7 @@ Build and start all services:
 docker compose up --build
 ```
 
-Keep this terminal running.
+Keep this terminal running...
 
 ---
 
