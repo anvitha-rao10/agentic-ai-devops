@@ -229,6 +229,4 @@ Expected:
 * Restarting Docker brings Jenkins and all configurations back exactly as before.
 
 
-```
-
 
