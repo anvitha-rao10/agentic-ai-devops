@@ -15,5 +15,11 @@ pipeline {
                 sh 'ls -la'
             }
         }
+        stage('Verify Python') {
+            steps {
+                sh 'python3 --version || python --version'
+            }
+        }
+
     }
 }
