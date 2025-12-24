@@ -6,7 +6,7 @@ pipeline {
             steps {
                 git branch: 'main',
                     credentialsId: 'github-ssh-key',
-                    url: 'git@github.com:disha-cyber/agentic-ai.git'
+                    url: 'git@github.com:anvitha-rao10/agentic-ai-devops.git'
             }
         }
 
