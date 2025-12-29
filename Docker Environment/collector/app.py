@@ -27,7 +27,7 @@ def collect_failure(build):
         },
         "error": {
             "error_type": "GIT_SSH_FAILURE",
-            "raw_log": log[:1500]
+            "raw_log": log
         }
     }
 
