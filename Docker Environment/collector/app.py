@@ -1,20 +1,37 @@
+from fastapi import FastAPI
+from datetime import datetime
+import uuid
+import threading
+import time
+
+from jenkins_client import fetch_last_build, fetch_console_log
+
+app = FastAPI()
+
+EVENTS = []
+LAST_BUILD_PROCESSED = None
+
+
 def jenkins_watcher():
     global LAST_BUILD_PROCESSED
 
+    print("🟢 Jenkins watcher started")
+
     while True:
         try:
-            print("🔍 Checking Jenkins...")
+            print("🔍 Checking Jenkins for latest build...")
 
             build = fetch_last_build()
-            print("📦 Build:", build.get("number"), build.get("result"))
-
             build_number = build.get("number")
+            build_result = build.get("result")
+
+            print(f"📦 Build #{build_number} → {build_result}")
 
             if (
-                build.get("result") == "FAILURE"
+                build_result == "FAILURE"
                 and build_number != LAST_BUILD_PROCESSED
             ):
-                print("🚨 Failure detected")
+                print("🚨 New failure detected")
 
                 log = fetch_console_log()
 
@@ -34,9 +51,26 @@ def jenkins_watcher():
 
                 EVENTS.append(event)
                 LAST_BUILD_PROCESSED = build_number
-                print("✅ Event stored")
+
+                print("✅ Failure metadata collected")
 
         except Exception as e:
             print("❌ Watcher error:", e)
 
-        time.sleep(10)
+        time.sleep(10)  # poll every 10 seconds
+
+
+@app.on_event("startup")
+def start_background_watcher():
+    thread = threading.Thread(target=jenkins_watcher, daemon=True)
+    thread.start()
+
+
+@app.get("/collector/events")
+def view_events():
+    return EVENTS
+
+
+@app.get("/health")
+def health():
+    return {"status": "collector_running"}
