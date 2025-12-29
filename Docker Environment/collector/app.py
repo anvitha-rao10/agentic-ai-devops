@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from datetime import datetime
 import uuid
 from jenkins_client import fetch_last_build, fetch_console_log
@@ -8,12 +8,18 @@ EVENTS = []
 
 @app.get("/collector/sync/jenkins")
 def sync_jenkins():
-    build = fetch_last_build()
+    try:
+        build = fetch_last_build()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
     if build.get("result") != "FAILURE":
         return {"status": "no_failure"}
 
-    log = fetch_console_log()
+    try:
+        log = fetch_console_log()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
     event = {
         "event_id": f"evt-{uuid.uuid4()}",

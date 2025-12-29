@@ -1,4 +1,4 @@
 import os
 
-JENKINS_URL = os.getenv("JENKINS_URL")
-JOB_NAME = "agentic-ai-devops"
+JENKINS_URL = os.getenv("JENKINS_URL", "http://jenkins:8080")
+JOB_NAME = "agentic-ai-devops-pipeline"
