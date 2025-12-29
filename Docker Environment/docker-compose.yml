@@ -1,17 +1,21 @@
 services:
+  dev:
+    build: .
+    container_name: agentic-ai-devops-env
+    volumes:
+      - .:/workspace
+    stdin_open: true
+    tty: true
+
   jenkins:
     image: jenkins/jenkins:lts
+    container_name: jenkins
     ports:
       - "8080:8080"
+      - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
-
-  collector:
-    build: ./CollectorAPI   # 👈 THIS is the collector
-    ports:
-      - "8000:8000"
-    depends_on:
-      - jenkins
+    restart: unless-stopped
 
 volumes:
   jenkins_home:
