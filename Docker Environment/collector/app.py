@@ -28,9 +28,11 @@ def jenkins_watcher():
             print(f"📦 Build #{build_number} → {build_result}")
 
             if (
-                build_result == "FAILURE"
+                not build.get("building")
+                and build.get("result") == "FAILURE"
                 and build_number != LAST_BUILD_PROCESSED
-            ):
+                ):
+
                 print("🚨 New failure detected")
 
                 log = fetch_console_log()
