@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  loki:
+    image: grafana/loki:2.9.0
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  preprocessor:
+    image: aiops-preprocessor
+    depends_on:
+      - loki
+    environment:
+      LOKI_URL: http://loki:3100
