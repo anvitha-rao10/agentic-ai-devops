@@ -3,15 +3,23 @@ from datetime import datetime
 from jenkins_client import fetch_last_build, fetch_console_log
 
 LATEST_FAILURE_EVENT = None
+LAST_FAILED_BUILD_NUMBER = None
+
 
 def collect_failed_event():
-    global LATEST_FAILURE_EVENT
+    global LATEST_FAILURE_EVENT, LAST_FAILED_BUILD_NUMBER
 
     build = fetch_last_build()
 
-    # ✅ STRICT: only FAILURE
+    # Only care about FAILURE
     if build.get("result") != "FAILURE":
-        return None
+        return LATEST_FAILURE_EVENT
+
+    build_number = build.get("number")
+
+    # 🔒 Prevent duplicate processing
+    if LAST_FAILED_BUILD_NUMBER == build_number:
+        return LATEST_FAILURE_EVENT
 
     log = fetch_console_log()
     change = build.get("changeSets", [{}])[0].get("items", [{}])[0]
@@ -22,7 +30,7 @@ def collect_failed_event():
         "source": "jenkins",
         "ci": {
             "job_name": build.get("fullDisplayName"),
-            "build_id": build.get("number"),
+            "build_id": build_number,
             "result": build.get("result"),
             "url": build.get("url")
         },
@@ -37,10 +45,12 @@ def collect_failed_event():
         }
     }
 
+    LAST_FAILED_BUILD_NUMBER = build_number
     return LATEST_FAILURE_EVENT
 
 
 def get_failed_event():
-    if LATEST_FAILURE_EVENT is None:
-        return collect_failed_event()
-    return LATEST_FAILURE_EVENT
+    # 🔄 Always re-check Jenkins
+    return collect_failed_event() or {
+        "status": "no_failed_build_detected"
+    }
