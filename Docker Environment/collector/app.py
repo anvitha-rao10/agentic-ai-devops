@@ -6,7 +6,7 @@ import time
 
 from jenkins_client import fetch_last_build, fetch_console_log
 
-app = FastAPI()
+# app = FastAPI()
 
 EVENTS = []
 LAST_BUILD_PROCESSED = None
