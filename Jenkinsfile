@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout Code (SSH)') {
             steps {
                 git branch: 'main',
-                  credentialsId: 'github-ssh-key',
+                  credentialsId: 'github2-ssh-key',
                     url: 'git@github.com:anvitha-rao10/agentic-ai-devops.git'
             }
         }
