@@ -26,7 +26,7 @@ def collect_failure(build):
             "build_id": build.get("number")
         },
         "error": {
-            # "error_type": "GIT_SSH_FAILURE",
+            "error_type": "GIT_SSH_FAILURE",
             "raw_log": log
         }
     }
