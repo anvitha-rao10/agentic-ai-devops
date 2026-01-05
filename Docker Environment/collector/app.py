@@ -39,12 +39,12 @@ def collect_failure(build):
 
 def jenkins_watcher():
     global LAST_BUILD_PROCESSED
+
     print("🟢 Jenkins watcher running")
 
     while True:
         try:
             build = fetch_last_build()
-            print("DEBUG build:", build.get("number"), build.get("result"))
 
             if (
                 not build.get("building")
@@ -64,19 +64,21 @@ def jenkins_watcher():
 def startup():
     global LAST_BUILD_PROCESSED
 
+    # 🔹 BOOTSTRAP: collect existing failed build once
     try:
         build = fetch_last_build()
-        print("🟡 Bootstrap build:", build.get("number"), build.get("result"))
 
         if (
             not build.get("building")
             and build.get("result") == "FAILURE"
         ):
+            print("🚨 Bootstrap failed build found")
             collect_failure(build)
 
     except Exception as e:
         print("❌ Bootstrap error:", e)
 
+    # 🔹 Start watcher thread
     threading.Thread(target=jenkins_watcher, daemon=True).start()
 
 
