@@ -1,4 +1,2 @@
-import os
-
-JENKINS_URL = os.getenv("JENKINS_URL", "http://jenkins:8080")
+JENKINS_URL = "http://localhost:8080"
 JOB_NAME = "agentic-ai-devops-pipeline"
