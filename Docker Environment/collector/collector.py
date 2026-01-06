@@ -51,7 +51,7 @@ def watcher():
         except Exception as e:
             print("❌ Watcher error:", e)
 
-        time.sleep(10)  # poll interval
+        time.sleep(10)
 
 
 def start_watcher():
